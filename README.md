@@ -18,7 +18,7 @@ imageExtension:
     namespace: {'small': {'80x80'}} # size is required
     # name: {'big': {size, method, path, quality}, ...}
 
-    # below properties are't required
+    # Following properties are not required
     maxSize: 1500x1500
     domain: http://example.com
     test: TRUE

@@ -170,6 +170,21 @@ class ImageManager extends Object {
     }
 
     /**
+     * Delete saved file and thumbnails
+     *
+     * @param string $file
+     * @return void
+     */
+    public function unlink($file) {
+        foreach ($this->options as $ns => $v) {
+            $image = $this->setNamespace($ns)->request($file);
+            @unlink($image->getPathname());
+        }
+        @unlink($this->imageStore[$file]->getPathname());
+        unset($this->imageStore[$file]);
+    }
+
+    /**
      *
      * @param string $pathName
      * @return ImageSource
@@ -198,7 +213,7 @@ class ImageManager extends Object {
     /**
      *
      * @param FileUpload $file
-     * @return type
+     * @return ImageSource
      */
     public function saveNetteUpload(FileUpload $file) {
         return $this->saveNetteImage($file->toImage(), $file->getName());
@@ -252,7 +267,7 @@ class ImageManager extends Object {
     /**
      *
      * @param string $name
-     * @return ImageManager
+     * @return ImageSource
      */
     public function request($name) {
         $data = $this->options[$this->namespace];
@@ -263,7 +278,12 @@ class ImageManager extends Object {
 
         $image = $this->imageStore[$name];
 
-        list($width, $height) = explode('x', $data['size']);
+        if ($data['size']) {
+            list($width, $height) = explode('x', $data['size']);
+        } else {
+            $width = $image->getWidth();
+            $height = $image->getHeight();
+        }
 
         return $image->create($width, $height, $data['method'], $data['quality'], $data['path']);
     }

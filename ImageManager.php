@@ -51,7 +51,7 @@ class ImageManager extends Object {
         'exact' => Image::EXACT,
         'fill' => Image::FILL,
         'fit' => Image::FIT,
-        'shrinkOnly' => Image::SHRINK_ONLY,
+        'shrink_only' => Image::SHRINK_ONLY,
         'stretch' => Image::STRETCH
     );
 
@@ -177,8 +177,7 @@ class ImageManager extends Object {
      */
     public function unlink($file) {
         foreach ($this->options as $ns => $v) {
-            $image = $this->setNamespace($ns)->request($file);
-            @unlink($image->getPathname());
+            $this->setNamespace($ns)->request($file, TRUE);
         }
         @unlink($this->imageStore[$file]->getPathname());
         unset($this->imageStore[$file]);
@@ -200,7 +199,7 @@ class ImageManager extends Object {
      * @return ImageSource
      */
     public function saveNetteImage(Image $image, $filename) {
-        $path = $this->getSource()->setFilename($filename)->prepareToSave();
+        $path = $this->getSource()->setFilename($filename)->prepareToSave()->mkdirMe();
 
         if ($this->maxSize) {
             $image->resize($this->maxSize['width'], $this->maxSize['height'], Image::SHRINK_ONLY);
@@ -229,13 +228,9 @@ class ImageManager extends Object {
      * @param string $namespace
      * @param string $size 300x300
      * @param int|string $method 4|exact
-     * @param string $path
+     * @param int $quality
      */
-    public function appendNs($namespace, $size, $method = Image::EXACT, $path = NULL, $quality = NULL) {
-        if ($path === NULL) {
-            $path = $namespace;
-        }
-
+    public function appendNs($namespace, $size, $method = Image::EXACT, $quality = NULL) {
         if ($this->namespace === NULL) {
             $this->namespace = $namespace;
         }
@@ -243,7 +238,6 @@ class ImageManager extends Object {
         $this->options[$namespace] = array(
             'size' => $size,
             'method' => self::imageMethod($method),
-            'path' => $path,
             'image' => NULL,
             'quality' => $quality
         );
@@ -267,9 +261,10 @@ class ImageManager extends Object {
     /**
      *
      * @param string $name
+     * @param bool $remove
      * @return ImageSource
      */
-    public function request($name) {
+    public function request($name, $remove = FALSE) {
         $data = $this->options[$this->namespace];
 
         if (!isset($this->imageStore[$name])) {
@@ -285,7 +280,13 @@ class ImageManager extends Object {
             $height = $image->getHeight();
         }
 
-        return $image->create($width, $height, $data['method'], $data['quality'], $data['path']);
+        $temp = $image->getTempPath($this->namespace);
+        if ($remove) {
+            @unlink($temp->getPathname());
+            unset($temp);
+            return TRUE;
+        }
+        return $image->create($width, $height, $temp, $data['method'], $data['quality']);
     }
 
     /**

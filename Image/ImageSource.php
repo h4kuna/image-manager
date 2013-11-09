@@ -111,23 +111,35 @@ class ImageSource extends \SplFileInfo {
      *
      * @param int $width
      * @param int $height
+     * @param Pathnizer|string $temp
      * @param int $method
      * @param int $quality
      * @return ImageSource
      */
-    public function create($width, $height, $method = Image::SHRINK_ONLY, $quality = NULL, $path = NULL) {
-        $path = $this->parent->getTemp()->append($path, $width . 'x' . $height . 'x' . $method);
-        $file = $path->setFilename($this->getFilename())->getPathname();
+    public function create($width, $height, $namespace, $method = Image::SHRINK_ONLY, $quality = NULL) {
+        $temp = !($namespace instanceof Pathnizer) ? $this->getTempPath($namespace) : $namespace;
+        $file = $temp->getPathname();
         if (!file_exists($file)) {
-            $path->mkdirMe();
+            $temp->mkdirMe();
             $this->getOriginal()->getImage()
                     ->resize($width, $height, $method)
                     ->save($file, $quality);
         }
 
-        $image = new static($this->parent, $path);
+        $image = new static($this->parent, $temp);
         $image->setOriginal($this->getOriginal());
         return $image;
+    }
+
+    /**
+     *
+     * @param string $namespace
+     * @return ImageSource
+     */
+    public function getTempPath($namespace) {
+        $temp = $this->parent->getTemp()->append($namespace);
+        $temp->setFilename($this->getFilename());
+        return $temp;
     }
 
     /**

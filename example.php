@@ -15,7 +15,7 @@ $configurator->onCompile[] = function ($configurator, $compiler) use ($pathTmp) 
     $ext = new h4kuna\DI\ImageExtension();
     $ext->defaults['namespace'] = array(
         'small' => array('80x80'),
-        'big' => array('150x150')
+        'big' => array('150x150', 'exact')
     );
     $ext->defaults['noImage'] = '../noImage.jpg'; // relative to $pathTmp
     // $ext->defaults['domain'] = 'http://example.com';
@@ -92,9 +92,6 @@ imageInfo($image, 'Original');
 /**
  * Use namespace
  */
-$imageManager->appendNs('small', '40x50');
-$imageManager->appendNs('big', '180x150', 'exact');
-
 echo $imageManager->setNamespace('small')->request($imageName)->render();
 echo $imageManager->setNamespace('big')->request($imageName)->render();
 

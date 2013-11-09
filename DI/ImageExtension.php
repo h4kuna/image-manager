@@ -37,10 +37,14 @@ class ImageExtension extends CompilerExtension {
                 ->setClass('h4kuna\ImageManager')
                 ->setArguments(array($config['wwwDir'], '@httpRequest', $config['source'], $config['temp']));
 
+        $engine = $builder->getDefinition('nette.latte');
+        $engine->addSetup('h4kuna\Macros\Latte::install(?->compiler, ?)', array('@self', $this->prefix('@imageManager')));
+
         foreach ($config['namespace'] as $ns => $setup) {
             array_unshift($setup, $ns);
             $manager->addSetup('appendNs', $setup);
         }
+
 
         if ($config['maxSize']) {
             $manager->addSetup('setMaxSize', array($config['maxSize']));

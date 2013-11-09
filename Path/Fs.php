@@ -12,6 +12,22 @@ class Fs extends Path {
         return DIRECTORY_SEPARATOR;
     }
 
+    /**
+     * @return string
+     */
+    public function getExtension() {
+        return pathinfo($this->path, PATHINFO_EXTENSION);
+    }
+
+    /**
+     *
+     * @param NULL|string $suffix
+     * @return string
+     */
+    public function getBasename($suffix = NULL) {
+        return basename($this->path, $suffix);
+    }
+
     /** @return bool */
     public function mkdirMe() {
         return @mkdir($this->path, 0777, TRUE);

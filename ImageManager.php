@@ -188,8 +188,11 @@ class ImageManager extends Object {
      * @param string $pathName
      * @return ImageSource
      */
-    public function saveImage($pathName) {
-        return $this->saveNetteImage(Image::fromFile($pathName), basename($pathName));
+    public function saveImage($pathName, $path = NULL) {
+        if ($path) {
+            $path .= '/';
+        }
+        return $this->saveNetteImage(Image::fromFile($pathName), $path . basename($pathName));
     }
 
     /**
@@ -214,8 +217,12 @@ class ImageManager extends Object {
      * @param FileUpload $file
      * @return ImageSource
      */
-    public function saveNetteUpload(FileUpload $file) {
-        return $this->saveNetteImage($file->toImage(), $file->getName());
+    public function saveNetteUpload(FileUpload $file, $path = NULL) {
+        if ($path) {
+            $path .= '/';
+        }
+
+        return $this->saveNetteImage($file->toImage(), $path . $file->getName());
     }
 
     /**

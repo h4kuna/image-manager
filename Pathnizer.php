@@ -123,7 +123,7 @@ class Pathnizer extends Object {
             $fileName = $name . '.' . Strings::random(3) . '.' . $ext;
             $file = $this->fs->create(array($fileName));
         } while (file_exists($file));
-        $this->filename = $fileName;
+        $this->filename = str_replace(basename($this->filename), $fileName, $this->filename);
         return $this;
     }
 
@@ -155,7 +155,8 @@ class Pathnizer extends Object {
      * @return Pathnizer
      */
     public function mkdirMe() {
-        $this->fs->mkdirMe();
+        $fs = $this->fs->create(array(dirname($this->filename)));
+        $fs->mkdirMe();
         return $this;
     }
 

@@ -60,6 +60,10 @@ $image = $imageManager->createImage($imageName);
 $img = $image->create(150, 150);
 $imgMini = $img->create(66, 80, \Nette\Image::EXACT);
 
+$img2 = $imageManager->saveImage($img->getPathname(), 'save-to-dir');
+echo $img2->getFilename(); // save-to-dir/avatar.xxx.jpg use for save
+echo $img2->render();
+
 function imageInfo(h4kuna\Image\ImageSource $image, $title) {
     ?>
     <div style="border: 1px gray solid; margin: 10px;">

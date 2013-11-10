@@ -24,8 +24,8 @@ imageExtension:
     domain: http://example.com
     test: TRUE
     noImage: 'relative path from source to image'
-    temp: 'relative path from source'
-    source: 'relative path from source'
+    temp: 'relative path from wwwDir'
+    source: 'relative path from wwwDir'
     wwwDir: '%wwwDir%'
 
 

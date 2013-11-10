@@ -60,7 +60,7 @@ You can write params inline to macro, above is recommended for unlink method.
 output:
 
 ```html
-<a href="/sourceDir/temp/200x200x0/filename.jpg"><img n:img="/sourceDir/temp/80x80x0/filename.jpg"></a>
+<a href="/sourceDir/temp/big/filename.jpg"><img n:img="/sourceDir/temp/small/filename.jpg"></a>
 ```
 
 ### Resizing flags

@@ -38,8 +38,13 @@ imageExtension:
 ```php
 /** @var h4kuna\ImageManager $imageManager */
 $imageManager->saveNetteUpload($fileUpload); // saves to .../sourceDir/filename.jpg
-$imageManager->saveNetteUpload($fileUpload, 'my-path'); // saves to .../sourceDir/my-path/filename.jpg
 // look at $imageManager->save*
+
+/** @var h4kuna\ImageSource $image */
+$image = $imageManager->saveNetteUpload($fileUpload, 'my-path'); // saves to .../sourceDir/my-path/filename.jpg
+
+echo $filename = $image->getFilename(); // save to db and this name is param to method
+$imageManager->setNamespace('small')->request($filename);
 ```
 
 ### Remove images

@@ -94,10 +94,10 @@ imageInfo($image, 'Original');
 
 
 /**
- * Use namespace
+ * Use namespace, whose define image property like as size, quelity, method
  */
-echo $imageManager->setNamespace('small')->request($imageName)->render();
+
 echo $imageManager->setNamespace('big')->request($imageName)->render();
 
 
-
+echo $imageManager->setNamespace('small')->request($img2->getFilename())->render();

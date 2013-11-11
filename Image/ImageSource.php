@@ -42,10 +42,6 @@ class ImageSource extends \SplFileInfo {
         parent::__construct($file);
     }
 
-    public function append($path) {
-        return $this->pathnizer->append($path);
-    }
-
     /**
      *
      * @param bool $absolute

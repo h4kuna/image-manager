@@ -6,11 +6,6 @@ use Nette\Configurator;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Compiler;
 
-if (!defined('\Nette\Framework::VERSION_ID') || \Nette\Framework::VERSION_ID < 20100) {
-    class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
-    class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
-}
-
 class ImageExtension extends CompilerExtension {
 
     public $defaults = array(

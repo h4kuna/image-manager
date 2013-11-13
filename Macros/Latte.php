@@ -14,6 +14,8 @@ use Nette\Latte\CompileException;
  */
 class Latte extends Nette\Latte\Macros\MacroSet {
 
+    private $used = FALSE;
+
     /**
      * @param \Nette\Latte\Compiler $compiler
      *
@@ -68,8 +70,12 @@ class Latte extends Nette\Latte\Macros\MacroSet {
     }
 
     public function finalize() {
+        if ($this->used) {
+            return array();
+        }
+        $this->used = TRUE;
         return array(
-            '$template->_imageManager = $presenter->getContext()->getByType("h4kuna\ImageManager");',
+            'if(isset($control)) { $template->_imageManager = $control->getPresenter()->getContext()->getByType("h4kuna\ImageManager"); }',
             NULL
         );
     }

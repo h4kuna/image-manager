@@ -177,9 +177,9 @@ class ImageManager extends Object {
      */
     public function unlink($file) {
         foreach ($this->options as $ns => $v) {
-            $this->setNamespace($ns)->request($file, TRUE);
+            @unlink($this->getTemp()->append($ns, $file)->getPathname());
         }
-        @unlink($this->imageStore[$file]->getPathname());
+        @unlink($this->getSource()->append($file)->getPathname());
         unset($this->imageStore[$file]);
     }
 
@@ -269,10 +269,9 @@ class ImageManager extends Object {
     /**
      *
      * @param string $name
-     * @param bool $remove
      * @return ImageSource
      */
-    public function request($name, $remove = FALSE) {
+    public function request($name) {
         $data = $this->options[$this->namespace];
 
         if (!isset($this->imageStore[$name])) {
@@ -289,11 +288,6 @@ class ImageManager extends Object {
         }
 
         $temp = $image->getTempPath($this->namespace);
-        if ($remove) {
-            @unlink($temp->getPathname());
-            unset($temp);
-            return TRUE;
-        }
         return $image->create($width, $height, $temp, $data['method'], $data['quality']);
     }
 

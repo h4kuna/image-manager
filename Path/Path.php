@@ -48,8 +48,8 @@ abstract class Path extends Object implements IPath {
         self::$used = FALSE;
         foreach ($path as $p) {
             if (!$p) {
-                continue;
                 self::$used = TRUE;
+                continue;
             }
             if (self::isBegin($p)) {
                 $outPath = rtrim($p, '\/');

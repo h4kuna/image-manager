@@ -39,7 +39,7 @@ class Latte extends Nette\Latte\Macros\MacroSet {
     public function macroImg(MacroNode $node, PhpWriter $writer) {
         $namespace = NULL;
         $arguments = $this->createArguments($node, $writer, $namespace);
-        return $writer->write('echo %escape($_imageManager->setNamespace(' . $writer->formatWord(trim($namespace)) . ')->request(' . implode(", ", $arguments) . '))');
+        return $writer->write('echo %escape($_imageManager->setNamespace(' . $writer->formatWord(trim($namespace)) . ')->request(' . implode(", ", $arguments) . ')->getUrl())');
     }
 
     /**
@@ -52,7 +52,7 @@ class Latte extends Nette\Latte\Macros\MacroSet {
 
         $namespace = NULL;
         $arguments = $this->createArguments($node, $writer, $namespace);
-        return $writer->write('?> src="<?php echo %escape($_imageManager->setNamespace(' . $writer->formatWord(trim($namespace)) . ')->request(' . implode(", ", $arguments) . '))?>" <?php');
+        return $writer->write('?> src="<?php echo %escape($_imageManager->setNamespace(' . $writer->formatWord(trim($namespace)) . ')->request(' . implode(", ", $arguments) . ')->getUrl())?>" <?php');
     }
 
     private function createArguments(MacroNode $node, PhpWriter $writer, &$namespace) {

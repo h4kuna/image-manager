@@ -198,11 +198,12 @@ class ImageManager extends Object {
     /**
      *
      * @param Image $image
-     * @param type $filename
+     * @param string $filename
      * @return ImageSource
      */
     public function saveNetteImage(Image $image, $filename) {
         $path = $this->getSource()->setFilename($filename)->prepareToSave()->mkdirMe();
+        $this->unlink($path->getFilename());
 
         if ($this->maxSize) {
             $image->resize($this->maxSize['width'], $this->maxSize['height'], Image::SHRINK_ONLY);

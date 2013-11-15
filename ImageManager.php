@@ -162,7 +162,7 @@ class ImageManager extends Object {
             if ($this->domain) {
 
                 if ($this->domain['auth']) {
-                    $curl = new Curl($this->domain['domain']);
+                    $curl = new CUrl($this->domain['domain'] . $name->getPath());
                     $curl->setOptions(array(
                         CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
                         CURLOPT_USERPWD => $this->domain['user'] . ':' . $this->domain['password']
@@ -173,7 +173,7 @@ class ImageManager extends Object {
                 }
                 try {
                     $image = @Image::fromString($source);
-                    $this->saveNetteImage($image, $name->getFilename());
+                    $image->save($name->getPathname());
                     return $this->createImage($name);
                 } catch (InvalidArgumentException $e) {
                     // source is not image

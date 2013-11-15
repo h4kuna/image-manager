@@ -132,7 +132,8 @@ class ImageManager extends Object {
      * @param string $path
      */
     public function setNoImage($path) {
-        $noImage = $this->getSource()->append($path);
+        $noImage = $this->getSource()->append(dirname($path));
+        $noImage->setFilename(basename($path));
         if (!file_exists($noImage->getPathname())) {
             throw new ImageManagerException('Alternative image as NoImage does not exists: ' . $noImage->getPathname());
         }

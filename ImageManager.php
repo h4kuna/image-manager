@@ -162,7 +162,7 @@ class ImageManager extends Object {
             if ($this->domain) {
 
                 if ($this->domain['auth']) {
-                    $curl = new Curl($this->domain['domain']);
+                    $curl = new CUrl($this->domain['domain']);
                     $curl->setOptions(array(
                         CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
                         CURLOPT_USERPWD => $this->domain['user'] . ':' . $this->domain['password']

@@ -275,11 +275,15 @@ class ImageManager extends Object {
     public function request($name) {
         $data = $this->options[$this->namespace];
 
-        if (!isset($this->imageStore[$name])) {
-            $this->imageStore[$name] = $this->createImage($name);
+        if (!$name) {
+            $image = $this->createImage($this->noImage);
+        } elseif (!isset($this->imageStore[$name])) {
+            $image = $this->imageStore[$name] = $this->createImage($name);
+        } else {
+            $image = $this->imageStore[$name];
         }
 
-        $image = $this->imageStore[$name];
+
 
         if ($data['size']) {
             list($width, $height) = explode('x', $data['size']);

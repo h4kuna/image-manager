@@ -58,7 +58,7 @@ class ImageManager extends Object {
     /** @var string */
     private $namespace;
 
-    /** @var string */
+    /** @var array */
     private $domain;
 
     /**
@@ -121,8 +121,14 @@ class ImageManager extends Object {
      *
      * @param string $http
      */
-    public function setDomain($http) {
-        $this->domain = rtrim($http, '/');
+    public function setDomain($http, $user = NULL, $password = NULL) {
+        $this->domain = array(
+            'domain' => rtrim($http, '/'),
+            'user' => $user,
+            'password' => $password,
+            'auth' => $user || $password
+        );
+
         return $this;
     }
 
@@ -154,7 +160,17 @@ class ImageManager extends Object {
             return $this->imageStore[$name->getFilename()] = new ImageSource($this, $name);
         } catch (ImageManagerException $e) {
             if ($this->domain) {
-                $source = @file_get_contents($this->domain . $name->getPath());
+
+                if ($this->domain['auth']) {
+                    $curl = new Curl($this->domain['domain']);
+                    $curl->setOptions(array(
+                        CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+                        CURLOPT_USERPWD => $this->domain['user'] . ':' . $this->domain['password']
+                    ));
+                    $source = $curl->exec();
+                } else {
+                    $source = @file_get_contents($this->domain['domain'] . $name->getPath());
+                }
                 try {
                     $image = @Image::fromString($source);
                     $this->saveNetteImage($image, $name->getFilename());

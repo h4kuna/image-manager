@@ -21,6 +21,8 @@ class ImageExtension extends CompilerExtension {
     public $defaults = array(
         'maxSize' => '2000x2000',
         'domain' => NULL,
+        'auth_user' => NULL,
+        'auth_password' => NULL,
         'namespace' => array(),
         'noImage' => NULL,
         'wwwDir' => '%wwwDir%',
@@ -60,7 +62,7 @@ class ImageExtension extends CompilerExtension {
         }
 
         if ($config['domain']) {
-            $manager->addSetup('setDomain', array($config['domain']));
+            $manager->addSetup('setDomain', array($config['domain'], $config['auth_user'], $config['auth_password']));
         }
 
         if ($config['test']) {

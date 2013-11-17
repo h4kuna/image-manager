@@ -27,6 +27,9 @@ imageExtension:
     temp: 'relative path from wwwDir'
     source: 'relative path from wwwDir'
     wwwDir: '%wwwDir%'
+    # if you have basic authentication on server
+    auth_user:
+    auth_password:
 
 
 </pre>

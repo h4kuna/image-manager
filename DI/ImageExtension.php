@@ -45,7 +45,7 @@ class ImageExtension extends CompilerExtension {
                 ->setArguments(array($config['wwwDir'], '@httpRequest', $config['source'], $config['temp']));
 
         $engine = $builder->getDefinition('nette.latte');
-        $engine->addSetup('h4kuna\Macros\Latte::install(?->compiler, ?)', array('@self', $this->prefix('@imageManager')));
+        $engine->addSetup('h4kuna\ImageManager\Macros\Latte::install(?->compiler, ?)', array('@self', $this->prefix('@imageManager')));
 
         foreach ($config['namespace'] as $ns => $setup) {
             array_unshift($setup, $ns);

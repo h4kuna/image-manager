@@ -1,6 +1,6 @@
 <?php
 
-namespace h4kuna\DI;
+namespace h4kuna\ImageManager\DI;
 
 use Nette\Configurator;
 use Nette\DI\CompilerExtension;

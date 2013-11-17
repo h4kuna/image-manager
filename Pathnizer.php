@@ -6,6 +6,8 @@ use Nette\Object;
 use Nette\Http\Request;
 use Nette\FileNotFoundException;
 use Nette\Utils\Strings;
+use h4kuna\ImageManager\Path\Fs;
+use h4kuna\ImageManager\Path\Url;
 
 /**
  * Pathnizer
@@ -29,13 +31,13 @@ use Nette\Utils\Strings;
  */
 class Pathnizer extends Object {
 
-    /** @var Path\Url */
+    /** @var Url */
     private $url;
 
     /** @var Request */
     //private $request;
 
-    /** @var Path\Fs */
+    /** @var Fs */
     private $fs;
 
     /** @var string */
@@ -52,8 +54,8 @@ class Pathnizer extends Object {
             throw new FileNotFoundException('Path does not exists: ' . $wwwDir);
         }
 
-        $this->fs = new Path\Fs($wwwDir);
-        $this->url = new Path\Url(NULL, $request);
+        $this->fs = new Fs($wwwDir);
+        $this->url = new Url(NULL, $request);
     }
 
     /**
@@ -128,7 +130,7 @@ class Pathnizer extends Object {
     }
 
     /**
-     * @return Path\Fs
+     * @return Fs
      */
     public function getPathname() {
         return $this->fs->create(array($this->filename));
@@ -136,7 +138,7 @@ class Pathnizer extends Object {
 
     /**
      * @param bool $absolute
-     * @return Path\Url
+     * @return Url
      */
     public function getUrlname($absolute = FALSE) {
         return $this->url->create(array(($absolute ? '//' : NULL) . $this->filename));
@@ -164,7 +166,7 @@ class Pathnizer extends Object {
      * Build url path
      *
      * @params string
-     * @return Path\Url
+     * @return Url
      */
     public function buildUrl($path /* , ... */) {
         return $this->url->create(func_get_args());
@@ -174,7 +176,7 @@ class Pathnizer extends Object {
      * Build filesystem path
      *
      * @params string
-     * @return Path\Fs
+     * @return Fs
      */
     public function buildFs($path /* , ... */) {
         return $this->fs->create(func_get_args());

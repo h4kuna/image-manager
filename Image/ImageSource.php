@@ -1,6 +1,6 @@
 <?php
 
-namespace h4kuna\Image;
+namespace h4kuna\ImageManager\Image;
 
 use h4kuna\Pathnizer;
 use Nette\Image;

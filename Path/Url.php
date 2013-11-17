@@ -1,9 +1,8 @@
 <?php
 
-namespace h4kuna\Path;
+namespace h4kuna\ImageManager\Path;
 
 use Nette\Http\Request;
-use Nette\Http\Url AS NHU;
 
 /**
  *

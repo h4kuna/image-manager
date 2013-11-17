@@ -7,7 +7,7 @@ use Nette\Object;
 use Nette\Http\Request;
 use Nette\Image;
 use Nette\Http\FileUpload;
-use h4kuna\Image\ImageSource;
+use h4kuna\ImageManager\Image\ImageSource;
 use Nette\InvalidArgumentException;
 
 /**

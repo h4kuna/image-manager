@@ -12,7 +12,7 @@ $configurator->enableDebugger($tmp);
 $configurator->setTempDirectory($tmp);
 
 $configurator->onCompile[] = function ($configurator, $compiler) use ($pathTmp) {
-    $ext = new h4kuna\DI\ImageExtension();
+    $ext = new h4kuna\ImageManager\DI\ImageExtension();
     $ext->defaults['namespace'] = array(
         'small' => array('80x80'),
         'big' => array('150x150', 'exact')
@@ -64,7 +64,7 @@ $img2 = $imageManager->saveImage($img->getPathname(), 'save-to-dir');
 echo $img2->getFilename(); // save-to-dir/avatar.xxx.jpg use for save
 echo $img2->render();
 
-function imageInfo(h4kuna\Image\ImageSource $image, $title) {
+function imageInfo(h4kuna\ImageManager\Image\ImageSource $image, $title) {
     ?>
     <div style="border: 1px gray solid; margin: 10px;">
         <h2><?php echo $title; ?></h2>

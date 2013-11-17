@@ -1,6 +1,6 @@
 <?php
 
-namespace h4kuna\Macros;
+namespace h4kuna\ImageManager\Macros;
 
 use Nette;
 use Nette\Latte\Compiler;

@@ -1,6 +1,6 @@
 <?php
 
-namespace h4kuna\Path;
+namespace h4kuna\ImageManager\Path;
 
 /**
  *

@@ -26,6 +26,7 @@ class ImageExtension extends CompilerExtension {
         'namespace' => array(),
         'noImage' => NULL,
         'wwwDir' => '%wwwDir%',
+        'placehold' => 'http://placehold.it/$size',
         'test' => FALSE, // message show in nette debug bar
         // Below properies are relative from wwwDir
         'source' => 'upload/public',
@@ -63,6 +64,10 @@ class ImageExtension extends CompilerExtension {
 
         if ($config['domain']) {
             $manager->addSetup('setDomain', array($config['domain'], $config['auth_user'], $config['auth_password']));
+        }
+
+        if($config['placehold']) {
+            $manager->addSetup('setPlacehold', array($config['placehold']));
         }
 
         if ($config['test']) {

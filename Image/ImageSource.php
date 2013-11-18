@@ -4,7 +4,6 @@ namespace h4kuna\ImageManager\Image;
 
 use h4kuna\Pathnizer;
 use Nette\Image;
-use Nette\Utils\Html;
 use h4kuna\ImageManager;
 use h4kuna\ImageManagerException;
 
@@ -12,7 +11,7 @@ use h4kuna\ImageManagerException;
  *
  * @author Milan Matějček
  */
-class ImageSource extends \SplFileInfo {
+class ImageSource extends ImageRender {
 
     /** @var ImageManager */
     protected $parent;
@@ -22,9 +21,6 @@ class ImageSource extends \SplFileInfo {
 
     /** @var ImageSource */
     private $original;
-
-    /** @var array */
-    private $imageInfo;
 
     /**
      *
@@ -53,15 +49,6 @@ class ImageSource extends \SplFileInfo {
 
     /**
      *
-     * @return int
-     */
-    public function getHeight() {
-        $this->getImageInfo(); // 100x faster than $this->getImage()->getHeight()
-        return $this->imageInfo[1];
-    }
-
-    /**
-     *
      * @return array
      */
     public function getImageInfo() {
@@ -69,31 +56,6 @@ class ImageSource extends \SplFileInfo {
             $this->imageInfo = @getimagesize($this->getPathname()); // @ - files smaller than 12 bytes causes read error
         }
         return $this->imageInfo;
-    }
-
-    /**
-     *
-     * @return int
-     */
-    public function getWidth() {
-        $this->getImageInfo();
-        return $this->imageInfo[0];
-    }
-
-    /**
-     *
-     * @param string $alt
-     * @return Html
-     */
-    public function render($alt = NULL) {
-        $img = Html::el('img');
-        $img->addAttributes(array(
-            'src' => $this->getUrl(),
-            'alt' => $alt,
-            'width' => $this->getWidth(),
-            'height' => $this->getHeight()
-        ));
-        return $img;
     }
 
     /**

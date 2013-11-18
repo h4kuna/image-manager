@@ -17,7 +17,7 @@ $configurator->onCompile[] = function ($configurator, $compiler) use ($pathTmp) 
         'small' => array('80x80'),
         'big' => array('150x150', 'exact')
     );
-    $ext->defaults['noImage'] = '../noImage.jpg'; // relative to $pathTmp
+    // $ext->defaults['noImage'] = '../noImage.jpg'; // relative to $pathTmp
     // $ext->defaults['domain'] = 'http://example.com';
     $ext->defaults['source'] = $pathTmp;
     $ext->defaults['test'] = TRUE;
@@ -101,3 +101,5 @@ echo $imageManager->setNamespace('big')->request($imageName)->render();
 
 
 echo $imageManager->setNamespace('small')->request($img2->getFilename())->render();
+
+echo $imageManager->setNamespace('small')->request(NULL)->render();

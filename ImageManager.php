@@ -9,6 +9,7 @@ use Nette\Image;
 use Nette\Http\FileUpload;
 use h4kuna\ImageManager\Image\ImageSource;
 use Nette\InvalidArgumentException;
+use h4kuna\ImageManager\Image\ImagePlahold;
 
 /**
  * @todo dodelat nacitani ze servru
@@ -45,6 +46,9 @@ class ImageManager extends Object {
      * @var string
      */
     private $noImage;
+
+    /** @var string */
+    private $placehold;
 
     /** @var array */
     private static $method = array(
@@ -144,6 +148,16 @@ class ImageManager extends Object {
             throw new ImageManagerException('Alternative image as NoImage does not exists: ' . $noImage->getPathname());
         }
         $this->noImage = $noImage;
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $str
+     * @return ImageManager
+     */
+    public function setPlacehold($str) {
+        $this->placehold = new ImagePlahold($str);
         return $this;
     }
 
@@ -293,6 +307,9 @@ class ImageManager extends Object {
         $data = $this->options[$this->namespace];
 
         if (!$name) {
+            if (!$this->noImage) {
+                return $this->placehold->setSize($data['size']);
+            }
             $image = $this->createImage($this->noImage);
         } elseif (!isset($this->imageStore[$name])) {
             $image = $this->imageStore[$name] = $this->createImage($name);

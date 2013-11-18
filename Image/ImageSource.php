@@ -119,7 +119,7 @@ class ImageSource extends \SplFileInfo {
             $temp->mkdirMe();
             $this->getOriginal()->getImage()
                     ->resize($width, $height, $method)
-                    ->save($file, $quality);
+                    ->save((string) $file, $quality);
         }
 
         $image = new static($this->parent, $temp);

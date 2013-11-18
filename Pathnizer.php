@@ -117,17 +117,18 @@ class Pathnizer extends Object {
      * @return Pathnizer
      */
     public function prepareToSave() {
-        $file = $this->fs->create(array($this->filename));
-        $random = $fileName = NULL;
+        $file = $fs->create(array($this->filename));
+        $temp = $random = $fileName = NULL;
         $ext = $file->getExtension();
         $name = trim(Strings::webalize($file->getBasename($ext), '.', FALSE), '.-');
         do {
-            $fileName = $name . '.' . $random . $ext;
-            $random = Strings::random(3) . '.';
-            $file = $this->fs->create(array($fileName));
+            $fileName = $name . $random . '.';
+            $random = '.' . Strings::random(3);
+            $temp = str_replace(basename($this->filename, $ext), $fileName, $this->filename);
+            $file = $fs->create(array($temp));
         } while (file_exists((string) $file));
 
-        $this->filename = str_replace(basename($this->filename), $fileName, $this->filename);
+        $this->filename = $temp;
         return $this;
     }
 

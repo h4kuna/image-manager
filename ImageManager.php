@@ -173,6 +173,7 @@ class ImageManager extends Object {
                 }
                 try {
                     $image = @Image::fromString($source);
+                    $name->mkdirMe();
                     $image->save($name->getPathname());
                     return $this->createImage($name);
                 } catch (InvalidArgumentException $e) {

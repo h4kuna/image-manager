@@ -57,7 +57,8 @@ abstract class Path extends Object implements IPath {
                 $outPath .= $this->getSeparator() . trim($p, '\/');
             }
         }
-        return $outPath;
+        //@todo Hack for Mac with double slashes, wtf
+        return str_replace('//', '/', $outPath);
     }
 
     /**

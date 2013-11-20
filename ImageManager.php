@@ -312,12 +312,14 @@ class ImageManager extends Object {
             }
             $image = $this->createImage($this->noImage);
         } elseif (!isset($this->imageStore[$name])) {
-            $image = $this->imageStore[$name] = $this->createImage($name);
+            try {
+                $image = $this->imageStore[$name] = $this->createImage($name);
+            } catch (ImageManagerException $e) {
+                return $this->placehold->setSize($data['size']);
+            }
         } else {
             $image = $this->imageStore[$name];
         }
-
-
 
         if ($data['size']) {
             list($width, $height) = explode('x', $data['size']);

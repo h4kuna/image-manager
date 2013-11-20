@@ -188,7 +188,7 @@ class ImageManager extends Object {
                 try {
                     $image = @Image::fromString($source);
                     $name->mkdirMe();
-                    $image->save($name->getPathname());
+                    $image->save((string) $name->getPathname());
                     return $this->createImage($name);
                 } catch (InvalidArgumentException $e) {
                     // source is not image

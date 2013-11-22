@@ -241,7 +241,7 @@ class ImageManager extends Object {
             $image->resize($this->maxSize['width'], $this->maxSize['height'], Image::SHRINK_ONLY);
         }
 
-        $image->save($path->getPathname());
+        $image->save((string) $path->getPathname());
         return $this->createImage($path);
     }
 

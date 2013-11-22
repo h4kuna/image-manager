@@ -67,7 +67,7 @@ class Url extends Path {
      */
     public function setPath($path) {
         $this->setAbsolute(self::isAbsolute($path));
-        return parent::setPath($path);
+        return parent::setPath($this->getSeparator() . $path);
     }
 
     /**

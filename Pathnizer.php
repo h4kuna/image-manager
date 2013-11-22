@@ -68,12 +68,13 @@ class Pathnizer extends Object {
         $content = strval(microtime(TRUE));
         $file = 'PathnizerTest.txt';
 
-        $fs = $this->fs->create(array($file));
-        $this->fs->mkdirMe();
+        $fs = clone $this->fs;
+        $fs->setFilename($file)->mkdirMe();
         if (!@file_put_contents($fs, $content)) {
             throw new \RuntimeException('Pathname must be writeable: ' . $fs);
         }
-        $url = $this->url->create(array('//' . $file));
+        $url = clone $this->url;
+        $url->setPath('//' . $file);
         $urlContent = @file_get_contents($url);
         if ($content == $urlContent) {
             unlink($fs);
@@ -87,10 +88,9 @@ class Pathnizer extends Object {
      * @param string $path
      * @return Pathnizer
      */
-    public function append($path /* , ... */) {
-        $args = func_get_args();
-        $this->fs->append($args);
-        $this->url->append($args);
+    public function append($path) {
+        $this->fs->setPath($path);
+        $this->url->setPath($path);
         return $this;
     }
 
@@ -113,11 +113,12 @@ class Pathnizer extends Object {
     }
 
     /**
-     *
+     * @repair
      * @return Pathnizer
      */
     public function prepareToSave() {
-        $file = $this->fs->create(array($this->filename));
+        $file = clone $this->fs;
+        $file->setFilename($this->filename);
         $temp = $random = $fileName = NULL;
         $ext = $file->getExtension();
         $name = trim(Strings::webalize($file->getBasename($ext), '.', FALSE), '.-');
@@ -125,7 +126,8 @@ class Pathnizer extends Object {
             $fileName = $name . $random . '.';
             $random = '.' . Strings::random(3);
             $temp = str_replace(basename($this->filename, $ext), $fileName, $this->filename);
-            $file = $this->fs->create(array($temp));
+            $file = clone $this->fs;
+            $file->setPath($temp);
         } while (file_exists((string) $file));
 
         $this->filename = $temp;
@@ -136,7 +138,9 @@ class Pathnizer extends Object {
      * @return Fs
      */
     public function getPathname() {
-        return $this->fs->create(array($this->filename));
+        $fs = clone $this->fs;
+        $fs->setFilename($this->filename);
+        return $fs;
     }
 
     /**
@@ -144,7 +148,8 @@ class Pathnizer extends Object {
      * @return Url
      */
     public function getUrlname($absolute = FALSE) {
-        return $this->url->create(array(($absolute ? '//' : NULL) . $this->filename));
+        $url = clone $this->url;
+        return $url->setPath(($absolute ? '//' : NULL) . $this->filename);
     }
 
     /**
@@ -152,7 +157,8 @@ class Pathnizer extends Object {
      * @return string
      */
     public function getPath() {
-        return $this->url->getPathname($this->filename);
+        $url = clone $this->url;
+        return $url->setPath($this->filename);
     }
 
     /**
@@ -160,8 +166,8 @@ class Pathnizer extends Object {
      * @return Pathnizer
      */
     public function mkdirMe() {
-        $fs = $this->fs->create(array(dirname($this->filename)));
-        $fs->mkdirMe();
+        $fs = clone $this->fs;
+        $fs->setFilename($this->filename)->mkdirMe();
         return $this;
     }
 
@@ -171,8 +177,9 @@ class Pathnizer extends Object {
      * @params string
      * @return Url
      */
-    public function buildUrl($path /* , ... */) {
-        return $this->url->create(func_get_args());
+    public function buildUrl($path) {
+        $url = clone $this->url;
+        return $url->setPath($path);
     }
 
     /**
@@ -181,8 +188,9 @@ class Pathnizer extends Object {
      * @params string
      * @return Fs
      */
-    public function buildFs($path /* , ... */) {
-        return $this->fs->create(func_get_args());
+    public function buildFs($path) {
+        $fs = clone $this->fs;
+        return $fs->setPath($path);
     }
 
     /**

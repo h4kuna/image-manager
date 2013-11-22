@@ -10,7 +10,7 @@ use Nette\Http\Request;
  */
 class Url extends Path {
 
-    private $absolute;
+    private $absolute = FALSE;
 
     /** @var string */
     private static $baseUrl;
@@ -31,8 +31,8 @@ class Url extends Path {
 
         if (!self::$request) {
             self::$request = $request;
-            self::$basePath = $request->getUrl()->getBasePath();
-            self::$baseUrl = $request->getUrl()->getBaseUrl();
+            self::$basePath = rtrim($request->getUrl()->getBasePath(), '/');
+            self::$baseUrl = rtrim($request->getUrl()->getBaseUrl(), '/');
         }
     }
 
@@ -42,44 +42,12 @@ class Url extends Path {
     }
 
     /**
-     * Append to path
-     *
-     * @param array $path
-     * @return string
-     */
-    public function append(array $path) {
-        $this->absolute = self::isAbsolute($path);
-        return $this->joinPath(array(self::getBase($this->absolute), parent::append($path)));
-    }
-
-    /**
-     * Create new instance and append
-     *
-     * @param array $path
-     * @return Url
-     */
-    public function create(array $path) {
-        $absolute = self::isAbsolute($path);
-        $url = new static($this->joinPath(array(-1 => $this->path) + $path), self::$request);
-        return $url->setAbsolute($absolute);
-    }
-
-    /**
      * Url path
      *
      * @return string
      */
     public function getPath() {
-        return $this->joinPath(array(self::getBase($this->absolute), $this->path));
-    }
-
-    /**
-     *
-     * @param string $file
-     * @return string
-     */
-    public function getPathname($file) {
-        return $this->joinPath(array($this->path, $file));
+        return self::getBase($this->absolute) . $this->path;
     }
 
     /**
@@ -87,23 +55,19 @@ class Url extends Path {
      * @param bool $v
      * @return Url
      */
-    private function setAbsolute($v) {
+    public function setAbsolute($v) {
         $this->absolute = (bool) $v;
         return $this;
     }
 
     /**
      *
-     * @param array $path
-     * @return boolean
+     * @param string $path
+     * @return Url
      */
-    private static function isAbsolute(array &$path) {
-        $absolute = FALSE;
-        if (strpos($path[0], '//') !== FALSE) {
-            $path[0] = substr($path[0], 2);
-            $absolute = TRUE;
-        }
-        return $absolute;
+    public function setPath($path) {
+        $this->setAbsolute(self::isAbsolute($path));
+        return parent::setPath($path);
     }
 
     /**
@@ -114,6 +78,19 @@ class Url extends Path {
      */
     private static function getBase($absolute) {
         return $absolute ? self::$baseUrl : self::$basePath;
+    }
+
+    /**
+     *
+     * @param array $path
+     * @return boolean
+     */
+    private static function isAbsolute(&$path) {
+        if (strpos($path, '//') !== FALSE) {
+            $path = substr($path, 2);
+            return TRUE;
+        }
+        return FALSE;
     }
 
 }

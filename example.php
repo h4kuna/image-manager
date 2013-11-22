@@ -34,19 +34,26 @@ $container = $configurator->createContainer();
 $pathnizer = new h4kuna\Pathnizer(__DIR__, $container->httpRequest);
 $pathnizer->append($pathTmp . '/milan'); // append to path
 $pathnizer->checkSetup(); // only control paths
-echo $pathnizer->buildFs('/css/', '/screen.css') . "<br>\n";
-echo $pathnizer->buildFs('/css', 'screen.css') . "<br>\n";
-echo $pathnizer->buildFs('css', 'screen.css') . "<br>\n";
+echo '<h4>Fs</h4>';
+echo $pathnizer->buildFs('/css//screen.css') . "<br>\n";
+echo $pathnizer->buildFs('/css/screen.css') . "<br>\n";
+echo $pathnizer->buildFs('css\\screen.css') . "<br>\n";
 echo $pathnizer->buildFs('css/screen.css') . "<br>\n";
 echo $pathnizer->buildFs('../css/screen.css') . "<br>\n";
 echo $pathnizer->buildFs('./css/screen.css') . "<br>\n";
 echo $pathnizer->buildFs('css/screen') . "<br>\n";
 echo $pathnizer->buildFs('css/screen/') . "<br>\n";
 // add basePath from Request
+echo '<h4>Url</h4>';
 echo $pathnizer->buildUrl('/css/screen.css') . "<br>\n";
 echo $pathnizer->buildUrl('css/screen.css') . "<br>\n";
 echo $pathnizer->buildUrl('//css/screen.css') . "<br>\n";
-
+echo '<h4>Fs</h4>';
+echo $pathnizer->getPath() . "<br>\n";
+echo $pathnizer->setFilename('lama/ahoj.jpg')->getFilename() . "<br>\n";
+echo $pathnizer->getPathname() . "<br>\n";
+echo $pathnizer->getUrlname() . "<br>\n";
+echo $pathnizer->getUrlname(TRUE) . "<br>\n";
 
 /**
  * h4kuna\Image\Container example
@@ -96,7 +103,6 @@ imageInfo($image, 'Original');
 /**
  * Use namespace, whose define image property like as size, quelity, method
  */
-
 echo $imageManager->setNamespace('big')->request($imageName)->render();
 
 

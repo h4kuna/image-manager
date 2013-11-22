@@ -8,6 +8,9 @@ namespace h4kuna\ImageManager\Path;
  */
 class Fs extends Path {
 
+    /** @var bool */
+    private $isFile = NULL;
+
     public function getSeparator() {
         return DIRECTORY_SEPARATOR;
     }
@@ -28,13 +31,45 @@ class Fs extends Path {
         return basename($this->path, $suffix);
     }
 
-    /** @return bool */
-    public function mkdirMe() {
-        return @mkdir($this->path, 0777, TRUE);
+    /** @return string */
+    public function getDirname() {
+        if ($this->isFile()) {
+            return dirname($this->path);
+        }
+        return $this->path;
     }
 
-    public function create(array $path) {
-        return new static($this->joinPath(array(-1 => $this->path) + $path));
+    /** @return bool */
+    public function mkdirMe() {
+        return @mkdir($this->getDirname(), 0777, TRUE);
+    }
+
+    /**
+     *
+     * @param string $name
+     * @return Fs
+     */
+    public function setFilename($name) {
+        $this->setPath($name);
+        return $this->iAmFile();
+    }
+
+    /** @return Fs */
+    public function iAmFile() {
+        $this->isFile = TRUE;
+        return $this;
+    }
+
+    /**
+     * Is file? NULL = unknown
+     *
+     * @return boolean
+     */
+    public function isFile() {
+        if (file_exists($this->path) && is_file($this->path)) {
+            return TRUE;
+        }
+        return $this->isFile;
     }
 
 }

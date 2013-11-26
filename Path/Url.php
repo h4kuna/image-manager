@@ -42,11 +42,20 @@ class Url extends Path {
     }
 
     /**
-     * Url path
+     * Path only
      *
      * @return string
      */
     public function getPath() {
+        return $this->path;
+    }
+
+    /**
+     * Url path
+     *
+     * @return string
+     */
+    public function getPathname() {
         return self::getBase($this->absolute) . $this->path;
     }
 
@@ -91,6 +100,10 @@ class Url extends Path {
             return TRUE;
         }
         return FALSE;
+    }
+
+    public function __toString() {
+        return $this->getPathname();
     }
 
 }

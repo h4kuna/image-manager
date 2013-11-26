@@ -154,11 +154,19 @@ class Pathnizer extends Object {
 
     /**
      *
-     * @return string
+     * @return Url
      */
     public function getPath() {
         $url = clone $this->url;
         return $url->setPath($this->filename);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getPathOnly() {
+        return $this->getPath()->getPath();
     }
 
     /**

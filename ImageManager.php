@@ -176,14 +176,14 @@ class ImageManager extends Object {
             if ($this->domain) {
 
                 if ($this->domain['auth']) {
-                    $curl = new CUrl($this->domain['domain'] . $name->getPath());
+                    $curl = new CUrl($this->domain['domain'] . $name->getPathOnly());
                     $curl->setOptions(array(
                         CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
                         CURLOPT_USERPWD => $this->domain['user'] . ':' . $this->domain['password']
                     ));
                     $source = $curl->exec();
                 } else {
-                    $source = @file_get_contents($this->domain['domain'] . $name->getPath());
+                    $source = @file_get_contents($this->domain['domain'] . $name->getPathOnly());
                 }
                 try {
                     $image = @Image::fromString($source);

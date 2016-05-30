@@ -1,0 +1,80 @@
+<?php
+
+namespace h4kuna\ImageManager\DI;
+
+use Nette\Configurator,
+	Nette\DI as NDI;
+
+class ImageExtension extends CompilerExtension
+{
+
+	public $defaults = array(
+		'maxSize' => '2000x2000',
+		'domain' => NULL,
+		'auth_user' => NULL,
+		'auth_password' => NULL,
+		'namespace' => array(),
+		'noImage' => NULL,
+		'wwwDir' => '%wwwDir%',
+		'placehold' => 'http://placehold.it/$size',
+		'test' => FALSE, // message show in nette debug bar
+		// Below properies are relative from wwwDir
+		'source' => 'upload/public',
+		'temp' => NULL
+	);
+
+	public function loadConfiguration()
+	{
+		$builder = $this->getContainerBuilder();
+		$config = $this->getConfig($this->defaults);
+
+		if (!$config['namespace']) {
+			throw new \h4kuna\ImageManagerException('Namespace is required');
+		}
+
+		$manager = $builder->addDefinition($this->prefix('imageManager'))
+			->setClass('h4kuna\ImageManager')
+			->setArguments(array($config['wwwDir'], '@httpRequest', $config['source'], $config['temp']));
+
+		$engine = $builder->getDefinition('nette.latte');
+		$engine->addSetup('h4kuna\ImageManager\Macros\Latte::install(?->compiler, ?)', array('@self', $this->prefix('@imageManager')));
+
+		foreach ($config['namespace'] as $ns => $setup) {
+			array_unshift($setup, $ns);
+			$manager->addSetup('appendNs', $setup);
+		}
+
+
+		if ($config['maxSize']) {
+			$manager->addSetup('setMaxSize', array($config['maxSize']));
+		}
+
+		if ($config['noImage']) {
+			$manager->addSetup('setNoImage', array($config['noImage']));
+		}
+
+		if ($config['domain']) {
+			$manager->addSetup('setDomain', array($config['domain'], $config['auth_user'], $config['auth_password']));
+		}
+
+		if ($config['placehold']) {
+			$manager->addSetup('setPlacehold', array($config['placehold']));
+		}
+
+		if ($config['test']) {
+			$manager->addSetup('checkSetup');
+		}
+	}
+
+	/**
+	 * @param \Nette\Configurator $configurator
+	 */
+	public static function register(Configurator $configurator)
+	{
+		$that = new static;
+		$configurator->onCompile[] = function ($config, Compiler $compiler) use ($that) {
+			$compiler->addExtension('imageExtension', $that);
+		};
+	}
+
+}

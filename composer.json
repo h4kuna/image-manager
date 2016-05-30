@@ -1,21 +1,26 @@
 {
-    "name": "h4kuna/image-manager",
-    "type": "library",
-    "description": "Create thumb and manager url",
-    "homepage": "https://github.com/h4kuna/image-manager",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Milan Matějček",
-            "email": "milan.matejcek@gmail.com",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "nette/nette": ">=2.0.6",
-        "h4kuna/object-wrapper": ">=1.0.6"
-    },
-    "autoload": {
-        "classmap": ["./"]
-    }
+	"name": "h4kuna/image-manager",
+	"type": "library",
+	"description": "Create thumb and manager url.",
+	"homepage": "https://github.com/h4kuna/image-manager",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Milan Matějček",
+			"email": "milan.matejcek@gmail.com",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"nette/utils": "~2.0"
+	},
+	"require-dev": {
+		"nette/tester": "~1.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"h4kuna\\ImageManager\\": "src/"
+		},
+		"files": ["src/exceptions.php"]
+	}
 }

@@ -2,6 +2,8 @@
 
 namespace h4kuna\ImageManager\Source;
 
+use h4kuna\ImageManager;
+
 class RemoteSource
 {
 
@@ -11,10 +13,14 @@ class RemoteSource
 	/** @var LocalSource */
 	private $local;
 
-	public function __construct($hostUrl, LocalSource $local)
+	/** @var ImageManager\Path */
+	private $path;
+
+	public function __construct($hostUrl, LocalSource $local, ImageManager\Path $path)
 	{
 		$this->hostUrl = $hostUrl;
 		$this->local = $local;
+		$this->path = $path;
 	}
 
 	/**
@@ -25,8 +31,7 @@ class RemoteSource
 	 */
 	public function createImagePath($resolution, $name, $method)
 	{
-		list($width, $height) = explode('x', $resolution);
-		$url = str_replace(['$width$', '$height$', '$name$', '$method$'], [$width, $height, $name, $method], $this->hostUrl);
+		$url = $this->hostUrl . '/' . $this->path->getRawUrl($name, $resolution, $method);
 		return $this->local->saveFile($url, $name, $resolution, $method);
 	}
 

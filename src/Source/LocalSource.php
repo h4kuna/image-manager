@@ -3,23 +3,13 @@
 namespace h4kuna\ImageManager\Source;
 
 use h4kuna\ImageManager,
-	Nette\Http,
 	Nette\Utils;
 
 class LocalSource
 {
 
-	/** @var string */
-	private $imageTempDir;
-
-	/** @var string */
-	private $wwwImageTemp;
-
-	/** @var string */
-	private $sourceDir;
-
-	/** @var Http\Request */
-	private $request;
+	/** @var ImageManager\Path */
+	private $path;
 
 	/** @var ImageManager\DownloadInterface */
 	private $download;
@@ -27,18 +17,19 @@ class LocalSource
 	/** @var PlaceholdSource */
 	private $placehold;
 
-	public function __construct($imageTempDir, $wwwImageTemp, $sourceDir, Http\Request $request, ImageManager\DownloadInterface $download, PlaceholdSource $placehold)
-	{
-		if ($wwwImageTemp && substr($wwwImageTemp, -1) == '/') {
-			$wwwImageTemp = rtrim($wwwImageTemp, '/');
-		}
+	/** @var bool */
+	private $absoluteUrl = FALSE;
 
-		$this->imageTempDir = $imageTempDir;
-		$this->wwwImageTemp = $wwwImageTemp;
-		$this->sourceDir = $sourceDir;
-		$this->request = $request;
+	public function __construct(ImageManager\Path $path, ImageManager\DownloadInterface $download, PlaceholdSource $placehold)
+	{
+		$this->path = $path;
 		$this->download = $download;
 		$this->placehold = $placehold;
+	}
+
+	public function enableAbsoluteUrl()
+	{
+		$this->absoluteUrl = TRUE;
 	}
 
 	/**
@@ -49,7 +40,7 @@ class LocalSource
 	 */
 	public function createImagePath($name, $resolution, $method)
 	{
-		$thumbFile = $this->getPathFs($name, $resolution, $method);
+		$thumbFile = $this->path->getFilesystem($name, $resolution, $method);
 		if (is_file($thumbFile)) {
 			return new ImagePath($this->getPathUrl($name, $resolution, $method), $thumbFile);
 		}
@@ -62,7 +53,6 @@ class LocalSource
 	}
 
 	/**
-	 *
 	 * @param Utils\Image|string $sourceFile
 	 * @param string $name
 	 * @param string $resolution
@@ -71,7 +61,7 @@ class LocalSource
 	 */
 	public function saveFile($sourceFile, $name, $resolution, $method)
 	{
-		$filename = $this->getPathFs($name, $resolution, $method);
+		$filename = $this->path->getFilesystem($name, $resolution, $method);
 		Utils\FileSystem::createDir(dirname($filename));
 
 		if ($sourceFile instanceof Utils\Image) {
@@ -84,19 +74,12 @@ class LocalSource
 		return new ImagePath($this->getPathUrl($name, $resolution, $method), $filename);
 	}
 
-	private function getPathFs($name, $resolution, $method)
-	{
-		return $this->getPath($name, $resolution, $method, DIRECTORY_SEPARATOR, $this->imageTempDir);
-	}
-
 	private function getPathUrl($name, $resolution, $method)
 	{
-		return $this->getPath($name, $resolution, $method, '/', rtrim($this->request->getUrl()->getBasePath() . $this->wwwImageTemp, '/'));
-	}
-
-	private function getPath($name, $resolution, $method, $separator, $path)
-	{
-		return $path . $separator . $resolution . '-' . $method . $separator . $name;
+		if ($this->absoluteUrl) {
+			return $this->path->getAbsoluteUrl($name, $resolution, $method);
+		}
+		return $this->path->getUrl($name, $resolution, $method);
 	}
 
 }

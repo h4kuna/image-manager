@@ -8,11 +8,12 @@ use h4kuna\ImageManager,
 class ImageView
 {
 
-	private static $methods = [
+	public static $methods = [
 		'shrink' => Utils\Image::SHRINK_ONLY,
 		'stretch' => Utils\Image::STRETCH,
 		'fill' => Utils\Image::FILL,
 		'exact' => Utils\Image::EXACT,
+		// přidat používané zkratky/kombinace
 	];
 
 	/** @var array */
@@ -30,18 +31,22 @@ class ImageView
 	/** @var DownloadInterface */
 	private $download;
 
-	public function __construct($allowedResolution, Source\LocalSource $local, Source\PlaceholdSource $placehold, Source\RemoteSource $remote, DownloadInterface $download)
+	public function __construct($allowedResolution, Source\LocalSource $local, Source\PlaceholdSource $placehold, DownloadInterface $download)
 	{
 		$this->allowedResolution = array_flip($allowedResolution);
 		$this->local = $local;
 		$this->placehold = $placehold;
-		$this->remote = $remote;
 		$this->download = $download;
 	}
 
 	public function setRemote(Source\RemoteSource $remote)
 	{
 		$this->remote = $remote;
+	}
+
+	public function addShortcut($name, $value)
+	{
+		self::$methods[$name] = (int) $value;
 	}
 
 	/**
@@ -52,7 +57,7 @@ class ImageView
 	 * @throws ImageManager\RemoteFileDoesNotExistsException
 	 * @return string
 	 */
-	public function createUrl($name, $resolution, $method)
+	public function createUrl($name, $resolution, $method = 0)
 	{
 		$this->checkResolution($resolution);
 		return $this->createImagePath($name, $resolution, self::methodStringToInt($method))->url;
@@ -66,7 +71,7 @@ class ImageView
 	 * @throws ImageManager\RemoteFileDoesNotExistsException
 	 * @return bool
 	 */
-	public function send($name, $resolution, $method)
+	public function send($name, $resolution, $method = 0)
 	{
 		$this->checkResolution($resolution);
 		$imagePath = $this->createImagePath($name, $resolution, $method);
@@ -82,7 +87,7 @@ class ImageView
 
 	private function createImagePath($name, $resolution, $method)
 	{
-		if ($image = $this->local->createImagePath($resolution, $name, $method)) {
+		if ($image = $this->local->createImagePath($name, $resolution, $method)) {
 			return $image;
 		} elseif ($this->remote && $image = $this->remote->createImagePath($resolution, $name, $method)) {
 			return $image;
@@ -92,7 +97,7 @@ class ImageView
 
 	private function checkResolution($resolution)
 	{
-		if (!$this->allowedResolution || isset($this->allowedResolution[$resolution])) {
+		if ($resolution && !$this->allowedResolution || isset($this->allowedResolution[$resolution])) {
 			return;
 		}
 		throw new ImageManager\ResolutionIsNotAllowedException($resolution);

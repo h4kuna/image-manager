@@ -2,7 +2,8 @@
 
 namespace h4kuna\ImageManager\Source;
 
-use Tester\Assert;
+use h4kuna\ImageManager,
+	Tester\Assert;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
@@ -23,10 +24,12 @@ class RemoteSourceTest extends \Tester\TestCase
 
 	public function testDownload()
 	{
-		$imagePath = $this->remote->createImagePath('200x100', 'foo.jpg', 0);
-		Assert::same('/temp/image/200x100-0/foo.jpg', $imagePath->url);
-		Assert::same($this->tempDir . '/tempImage/200x100-0/foo.jpg', $imagePath->fs);
-		unlink($imagePath->fs);
+		try {
+			$imagePath = $this->remote->createImagePath('200x100', 'foo.jpg', 0);
+		} catch (ImageManager\RemoteFileDoesNotExistsException $e) {
+			Assert::same('http://production-server.com/assets/temp/image/200x100-0/foo.jpg', $e->getMessage());
+		}
+		Assert::false(isset($imagePath));
 	}
 
 	/**

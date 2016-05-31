@@ -5,7 +5,7 @@ Installation to project
 -----------------------
 The best way to install h4kuna/image-manager is using Composer:
 ```sh
-$ composer require h4kuna/image-manager:@dev
+$ composer require h4kuna/image-manager
 ```
 
 Example NEON config

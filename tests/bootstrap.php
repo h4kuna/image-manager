@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/../vendor/autoload.php";
 require __DIR__ . '/libs/ConfiguratorFactory.php';
+require __DIR__ . '/libs/RequestFactory.php';
 
 $tempDir = __DIR__ . '/temp';
 

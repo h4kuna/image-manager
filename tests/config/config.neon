@@ -1,6 +1,14 @@
 php:
 	timezone: europe/prague
+nette:
+	application:
+		scanDirs: false
 
+services:
+	requestFactory: h4kuna\Test\Http\RequestFactory
+	httpRequest:
+		class: Nette\Http\Request
+		factory: @requestFactory::create('http://www.example.com')
 
 extensions:
 	imageManager: h4kuna\ImageManager\DI\ImageExtension
@@ -10,7 +18,7 @@ imageManager:
 		sourcePath: %tempDir%/original
 		maxResolution: 100x100
 	remoteSource:
-		domain: 'https://placeholdit.imgix.net/~text?txt=$name$&w=$width$&h=$height$'
+		domain: 'http://production-server.com/assets'
 	# noImage: # filesystem path
 	public:
 		tempUrl: temp/image

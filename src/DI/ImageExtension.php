@@ -2,8 +2,7 @@
 
 namespace h4kuna\ImageManager\DI;
 
-use Nette\Configurator,
-	Nette\DI as NDI;
+use Nette\DI as NDI;
 
 class ImageExtension extends NDI\CompilerExtension
 {
@@ -19,9 +18,10 @@ class ImageExtension extends NDI\CompilerExtension
 		'public' => [
 			'tempDir' => '',
 			'urlPath' => '',
+			'useAbsolutePath' => FALSE,
 			'allowedResolutions' => [],
 		],
-		'noImage' => NULL
+		'noImage' => NULL // @todo
 	);
 
 	public function loadConfiguration()
@@ -52,8 +52,15 @@ class ImageExtension extends NDI\CompilerExtension
 		}
 
 		// local
-		$builder->addDefinition($this->prefix('local'))
-			->setClass('h4kuna\ImageManager\Source\LocalSource', [$config['public']['tempDir'], $config['public']['tempUrl'], $config['upload']['sourcePath']]);
+		$local = $builder->addDefinition($this->prefix('local'))
+			->setClass('h4kuna\ImageManager\Source\LocalSource');
+		if($config['public']['useAbsolutePath']) {
+			$local->addSetup('?->enableAbsoluteUrl()', ['@self']);
+		}
+
+		// path
+		$builder->addDefinition($this->prefix('path'))
+			->setClass('h4kuna\ImageManager\Path', [$config['public']['tempDir'], $config['public']['tempUrl'], $config['upload']['sourcePath']]);
 
 		// placehold - url
 		if (is_file($config['noImage'])) {
@@ -64,20 +71,9 @@ class ImageExtension extends NDI\CompilerExtension
 				->setClass('h4kuna\ImageManager\Source\PlaceholdSource');
 		}
 
-
-//		$engine = $builder->getDefinition('nette.latte');
-//		$engine->addSetup('h4kuna\ImageManager\Macros\Latte::install(?->compiler, ?)', array('@self', $this->prefix('@imageManager')));
-	}
-
-	/**
-	 * @param \Nette\Configurator $configurator
-	 */
-	public static function register(Configurator $configurator)
-	{
-		$that = new static;
-		$configurator->onCompile[] = function ($config, Compiler $compiler) use ($that) {
-			$compiler->addExtension('imageExtension', $that);
-		};
+		$builder->getDefinition('latte.latteFactory')
+			->addSetup('addFilter', ['getH4kunaImageView', new NDI\Statement('function () { return ?;}', [$imageView])])
+			->addSetup('h4kuna\ImageManager\Template\LatteMacro::install(?->getCompiler())', ['@self']);
 	}
 
 }

@@ -1,11 +1,9 @@
 <?php
 
-namespace h4kuna;
+namespace h4kuna\ImageManager;
 
-/**
- *
- * @author Milan Matějček
- */
-class ImageManagerException extends \RuntimeException {
+abstract class ImageManagerException extends \Exception {}
 
-}
+class RemoteFileDoesNotExistsException extends ImageManagerException {}
+
+class ResolutionIsNotAllowedException extends ImageManagerException {}

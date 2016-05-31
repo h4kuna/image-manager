@@ -1,0 +1,21 @@
+php:
+	timezone: europe/prague
+
+
+extensions:
+	imageManager: h4kuna\ImageManager\DI\ImageExtension
+
+imageManager:
+	upload:
+		sourcePath: %tempDir%/original
+		maxResolution: 100x100
+	remoteSource:
+		domain: 'https://placeholdit.imgix.net/~text?txt=$name$&w=$width$&h=$height$'
+	# noImage: # filesystem path
+	public:
+		tempUrl: temp/image
+		tempDir: %tempDir%/tempImage #filesystem path
+		allowedResolutions:
+			- 20x20
+			- 30x30
+			- 40x40

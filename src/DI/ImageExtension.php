@@ -5,22 +5,23 @@ namespace h4kuna\ImageManager\DI;
 use Nette\Configurator,
 	Nette\DI as NDI;
 
-class ImageExtension extends CompilerExtension
+class ImageExtension extends NDI\CompilerExtension
 {
 
 	public $defaults = array(
-		'maxSize' => '2000x2000',
-		'domain' => NULL,
-		'auth_user' => NULL,
-		'auth_password' => NULL,
-		'namespace' => array(),
-		'noImage' => NULL,
-		'wwwDir' => '%wwwDir%',
-		'placehold' => 'http://placehold.it/$size',
-		'test' => FALSE, // message show in nette debug bar
-		// Below properies are relative from wwwDir
-		'source' => 'upload/public',
-		'temp' => NULL
+		'upload' => [
+			'sourcePath' => '',
+			'maxResolution' => '2000x2000'
+		],
+		'remoteSource' => [
+			'domain' => NULL,
+		],
+		'public' => [
+			'tempDir' => '',
+			'urlPath' => '',
+			'allowedResolutions' => [],
+		],
+		'noImage' => NULL
 	);
 
 	public function loadConfiguration()
@@ -28,42 +29,44 @@ class ImageExtension extends CompilerExtension
 		$builder = $this->getContainerBuilder();
 		$config = $this->getConfig($this->defaults);
 
-		if (!$config['namespace']) {
-			throw new \h4kuna\ImageManagerException('Namespace is required');
+		// imageView
+		$imageView = $builder->addDefinition($this->prefix('imageView'));
+		$imageView->setClass('h4kuna\ImageManager\ImageView', [$config['public']['allowedResolutions']]);
+
+		// download
+		$builder->addDefinition($this->prefix('download'))
+			->setClass('h4kuna\ImageManager\Download\FileContent');
+
+		// saver
+		$saver = $builder->addDefinition($this->prefix('saver'));
+		$saver->setClass('h4kuna\ImageManager\Saver', [$config['upload']['sourcePath']]);
+		if ($config['upload']['maxResolution']) {
+			$saver->addSetup('?->setMaxSize(?)', [$saver, $config['upload']['maxResolution']]);
 		}
 
-		$manager = $builder->addDefinition($this->prefix('imageManager'))
-			->setClass('h4kuna\ImageManager')
-			->setArguments(array($config['wwwDir'], '@httpRequest', $config['source'], $config['temp']));
+		// remote
+		if ($config['remoteSource']['domain']) {
+			$builder->addDefinition($this->prefix('remote'))
+				->setClass('h4kuna\ImageManager\Source\RemoteSource', [$config['remoteSource']['domain']]);
+			$imageView->addSetup('?->setRemote(?)', [$imageView, $this->prefix('@remote')]);
+		}
 
-		$engine = $builder->getDefinition('nette.latte');
-		$engine->addSetup('h4kuna\ImageManager\Macros\Latte::install(?->compiler, ?)', array('@self', $this->prefix('@imageManager')));
+		// local
+		$builder->addDefinition($this->prefix('local'))
+			->setClass('h4kuna\ImageManager\Source\LocalSource', [$config['public']['tempDir'], $config['public']['tempUrl'], $config['upload']['sourcePath']]);
 
-		foreach ($config['namespace'] as $ns => $setup) {
-			array_unshift($setup, $ns);
-			$manager->addSetup('appendNs', $setup);
+		// placehold - url
+		if (is_file($config['noImage'])) {
+			// placehold - file @todo
+			throw new \Nette\NotImplementedException();
+		} elseif ($config['noImage'] !== FALSE) {
+			$builder->addDefinition($this->prefix('placehold'))
+				->setClass('h4kuna\ImageManager\Source\PlaceholdSource');
 		}
 
 
-		if ($config['maxSize']) {
-			$manager->addSetup('setMaxSize', array($config['maxSize']));
-		}
-
-		if ($config['noImage']) {
-			$manager->addSetup('setNoImage', array($config['noImage']));
-		}
-
-		if ($config['domain']) {
-			$manager->addSetup('setDomain', array($config['domain'], $config['auth_user'], $config['auth_password']));
-		}
-
-		if ($config['placehold']) {
-			$manager->addSetup('setPlacehold', array($config['placehold']));
-		}
-
-		if ($config['test']) {
-			$manager->addSetup('checkSetup');
-		}
+//		$engine = $builder->getDefinition('nette.latte');
+//		$engine->addSetup('h4kuna\ImageManager\Macros\Latte::install(?->compiler, ?)', array('@self', $this->prefix('@imageManager')));
 	}
 
 	/**

@@ -40,7 +40,7 @@ class ImageExtension extends NDI\CompilerExtension
 
 		// saver
 		$saver = $builder->addDefinition($this->prefix('saver'));
-		$saver->setClass('h4kuna\ImageManager\Saver', [$config['upload']['sourcePath']]);
+		$saver->setClass('h4kuna\ImageManager\Saver');
 		if ($config['upload']['maxResolution']) {
 			$saver->addSetup('?->setMaxSize(?)', [$saver, $config['upload']['maxResolution']]);
 		}

@@ -11,15 +11,12 @@ class Saver
 	/** @var int[] */
 	private $maxSize = [];
 
-	/** @var string */
-	private $saveDir;
+	/** @var Path */
+	private $path;
 
-	/**
-	 * @param string $saveDir - slash on end of path is required
-	 */
-	public function __construct($saveDir)
+	public function __construct(Path $path)
 	{
-		$this->saveDir = self::addSlashPath($saveDir);
+		$this->path = $path;
 	}
 
 	public function setMaxSize($maxSize)
@@ -55,17 +52,16 @@ class Saver
 	 */
 	public function saveImage(Utils\Image $image, $path, $extension)
 	{
-		$relative = self::addSlashPath($path);
-		Utils\FileSystem::createDir($this->saveDir . $relative);
 		do {
-			$relativePath = $relative . md5(microtime()) . '.' . strtolower($extension);
-			$filename = $this->saveDir . $relativePath;
+			$relativePath = self::addSlashPath($path) . md5(microtime()) . '.' . strtolower($extension);
+			$filename = $this->path->getSourceDir($relativePath);
 		} while (is_file($filename));
 		if ($this->maxSize) {
 			$image->resize($this->maxSize['width'], $this->maxSize['height'], Utils\Image::SHRINK_ONLY);
 		}
+		Utils\FileSystem::createDir(dirname($filename));
 		$image->save($filename);
-		return new Image($this->saveDir, $relativePath);
+		return new Image($this->path->getSourceDir(''), $relativePath);
 	}
 
 	private static function addSlashPath($path)
@@ -73,7 +69,7 @@ class Saver
 		if (!$path) {
 			return '';
 		}
-		return rtrim($path, '\/') . DIRECTORY_SEPARATOR;
+		return $path . DIRECTORY_SEPARATOR;
 	}
 
 }

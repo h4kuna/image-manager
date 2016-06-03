@@ -44,7 +44,7 @@ class LocalSource
 		if (is_file($thumbFile)) {
 			return new ImagePath($this->getPathUrl($name, $resolution, $method), $thumbFile);
 		}
-		$sourceImage = $this->sourceDir . DIRECTORY_SEPARATOR . $name;
+		$sourceImage = $this->path->getSourceDir($name);
 		if (!is_file($sourceImage)) {
 			return $this->placehold->createImagePath($resolution);
 		}

@@ -44,7 +44,7 @@ class ImageView
 	 * @throws ImageManager\RemoteFileDoesNotExistsException
 	 * @return string
 	 */
-	public function createUrl($name, $resolution, $method = 0)
+	public function createUrl($name, $resolution, $method)
 	{
 		$this->checkResolution($resolution);
 		return $this->createImagePath($name, $resolution, $method)->url;
@@ -58,7 +58,7 @@ class ImageView
 	 * @throws ImageManager\RemoteFileDoesNotExistsException
 	 * @return bool
 	 */
-	public function send($name, $resolution, $method = 0)
+	public function send($name, $resolution, $method)
 	{
 		$this->checkResolution($resolution);
 		$imagePath = $this->createImagePath($name, $resolution, $method);

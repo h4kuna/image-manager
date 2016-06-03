@@ -44,7 +44,7 @@ class LatteMacroTest extends \Tester\TestCase
 	public function testMethodStrToInt()
 	{
 		Assert::same(1, LatteMacro::methodStringToInt('shrink'));
-		Assert::same(3, LatteMacro::methodStringToInt('shrink,stretch'));
+		Assert::same(3, LatteMacro::methodStringToInt('shrink;stretch'));
 		Assert::same(0, LatteMacro::methodStringToInt('foo'));
 		Assert::same(3, LatteMacro::methodStringToInt('3'));
 	}

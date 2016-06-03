@@ -92,7 +92,7 @@ class LatteMacro extends Latte\Macros\MacroSet
 			return (int) $method;
 		}
 		$int = 0;
-		foreach (explode(',', $method) as $m) {
+		foreach (explode(';', $method) as $m) {
 			if (isset(self::$methods[$m])) {
 				$int |= self::$methods[$m];
 			}

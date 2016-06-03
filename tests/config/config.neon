@@ -27,3 +27,5 @@ imageManager:
 			- 20x20
 			- 30x30
 			- 40x40
+	shortcuts:
+		basic: 10

@@ -25,14 +25,6 @@ class ImageViewTest extends \Tester\TestCase
 		$this->imageView->createUrl('foo.jpg', '100x100', 0);
 	}
 
-	public function testMethodStrToInt()
-	{
-		Assert::same(1, ImageView::methodStringToInt('shrink'));
-		Assert::same(3, ImageView::methodStringToInt('shrink,stretch'));
-		Assert::same(0, ImageView::methodStringToInt('foo'));
-		Assert::same(3, ImageView::methodStringToInt('3'));
-	}
-
 }
 
 /* @var $imageView ImageView */

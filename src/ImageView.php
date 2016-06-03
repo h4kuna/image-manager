@@ -8,14 +8,6 @@ use h4kuna\ImageManager,
 class ImageView
 {
 
-	public static $methods = [
-		'shrink' => Utils\Image::SHRINK_ONLY,
-		'stretch' => Utils\Image::STRETCH,
-		'fill' => Utils\Image::FILL,
-		'exact' => Utils\Image::EXACT,
-		// přidat používané zkratky/kombinace
-	];
-
 	/** @var array */
 	private $allowedResolution;
 
@@ -44,11 +36,6 @@ class ImageView
 		$this->remote = $remote;
 	}
 
-	public function addShortcut($name, $value)
-	{
-		self::$methods[$name] = (int) $value;
-	}
-
 	/**
 	 * @param string $name
 	 * @param string $resolution
@@ -60,7 +47,7 @@ class ImageView
 	public function createUrl($name, $resolution, $method = 0)
 	{
 		$this->checkResolution($resolution);
-		return $this->createImagePath($name, $resolution, self::methodStringToInt($method))->url;
+		return $this->createImagePath($name, $resolution, $method)->url;
 	}
 
 	/**
@@ -101,25 +88,6 @@ class ImageView
 			return;
 		}
 		throw new ImageManager\ResolutionIsNotAllowedException($resolution);
-	}
-
-	/**
-	 * @internal
-	 * @param string|int $method
-	 * @return int
-	 */
-	public static function methodStringToInt($method)
-	{
-		if (is_numeric($method)) {
-			return (int) $method;
-		}
-		$int = 0;
-		foreach (explode(',', $method) as $m) {
-			if (isset(self::$methods[$m])) {
-				$int |= self::$methods[$m];
-			}
-		}
-		return $int;
 	}
 
 }

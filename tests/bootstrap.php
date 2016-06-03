@@ -14,7 +14,6 @@ $configurator = h4kuna\ImageManager\Test\ConfiguratorFactory::create($tempDir);
 $configurator->addConfig(__DIR__ . '/config/config.neon');
 
 Tester\Environment::setup();
-
-
+Tracy\Debugger::enable(FALSE);
 
 return $configurator->createContainer();

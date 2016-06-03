@@ -21,6 +21,7 @@ class ImageExtension extends NDI\CompilerExtension
 			'useAbsolutePath' => FALSE,
 			'allowedResolutions' => [],
 		],
+		'shortcuts' => [],
 		'noImage' => NULL // @todo
 	);
 
@@ -73,7 +74,7 @@ class ImageExtension extends NDI\CompilerExtension
 
 		$builder->getDefinition('latte.latteFactory')
 			->addSetup('addFilter', ['getH4kunaImageView', new NDI\Statement('function () { return ?;}', [$imageView])])
-			->addSetup('h4kuna\ImageManager\Template\LatteMacro::install(?->getCompiler())', ['@self']);
+			->addSetup('h4kuna\ImageManager\Template\LatteMacro::install(?->getCompiler(), ?)', ['@self', $config['shortcuts']]);
 	}
 
 }

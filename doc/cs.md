@@ -48,7 +48,7 @@ try {
 }
 
 
-dump($image->getRelativePath()); 
+dump($image->getRelativePath());
 ```
 
 další metody **save()** a **saveImage()** dělají to samé jen přijímají jiné parametry například cestu k souboru nebo [Nette Image](https://api.nette.org/Nette.Utils.Image.html).
@@ -57,19 +57,22 @@ Návratový objekt je [Image](../src/Image.php), který nám poskytuje relativn�
 
 [imageView](../src/ImageView.php)
 ---------
-Bude se hodit vyrobit si na servru .htaccess. Když server nenajde obrázek, tak přesměruje požaavek na tento soubor, který vytvoří náhled. A při dalším stejném requestu obrázek najde.
+Bude se hodit vyrobit si na servru .htaccess. Když server nenajde obrázek, tak přesměruje požavek na [tento soubor](create-image.php), který vytvoří náhled. A při dalším stejném requestu obrázek najde.
 
 ```php
 $container = require 'bootstrap.php';
 // z containeru vytáhneme imageView
 // rozparsujeme url abychom věděli jaký obrázek chybí
-if(!$imageView->send($name, $resolution, $method)) {
+try {
+    $imageView->send($name, $resolution, $method);
+} catch (\h4kuna\ImageManager\ImageManagerException $e) {
     // nastavíme 404 hlavičku
 }
+
 // obrázek se zobrazí a příšttě se už ukáže na požadované cestě, která nabyla k dispozici.
 ```
 
-### Pouziti v latte
+### Použití v latte
 Nainstaluje se makro {img}, které použijete v šablonách. Pokud chcete aplikovat na obrázek více pravidel pro zpracování tak je odděltě středníkem (;). Není potřeba obalovat do uvozovek.
 
 ```html
@@ -77,7 +80,7 @@ Nainstaluje se makro {img}, které použijete v šablonách. Pokud chcete apliko
 ```
 Zápis pomocí n makra. Třetí parametr není povinný.
 ```html
-<a href="{img $imageRelativePath, '300x200'}"><img n:img="$imageRelativePath, '300x200', 'fill,shrink'"></a>
+<a href="{img $imageRelativePath, '300x200'}"><img n:img="$imageRelativePath, '300x200', 'fill;shrink'"></a>
 ```
 
 výstup:
